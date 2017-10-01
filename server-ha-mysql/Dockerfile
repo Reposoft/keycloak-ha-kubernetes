@@ -9,4 +9,5 @@ ADD xsl-transform.sh /usr/local/bin/xsl-transform
 ADD *.xsl /tmp/
 
 RUN xsl-transform /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml /tmp/jgroups-jdbc.xsl \
+  && xsl-transform /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml /tmp/cache-owners.xsl \
   && xsl-transform /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml /tmp/node-identifier.xsl
