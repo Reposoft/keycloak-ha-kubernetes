@@ -1,0 +1,32 @@
+#
+
+apiVersion: apps/v1beta1 # for versions >= 1.8.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: kc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: jboss/keycloak-ha
+        # eval $(minikube docker-env) && docker build -t jboss/keycloak server && docker build -t jboss/keycloak-ha server-ha
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        env:
+        - name: DB_VENDOR
+          value: mysql
+        - name: MYSQL_DATABASE
+          value: keycloak
+        - name: MYSQL_USER
+          value: keycloak
+        - name: MYSQL_PASSWORD
+          value: keycloak
