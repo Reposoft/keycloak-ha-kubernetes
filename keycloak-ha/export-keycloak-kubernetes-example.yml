@@ -28,9 +28,18 @@ spec:
         - /bin/bash
         - -c
         - >
-          /opt/jboss/docker-entrypoint.sh
+          mkdir keycloak-export;
+          date +%FT%T.%N > keycloak-export/keycloak-export-timestamp.txt;
+          echo "Full startup log is in $(pwd)/export-start.log";
+          echo "When export is confirmed, do something like:";
+          echo "kubectl exec $HOSTNAME -- tar cvz keycloak-export/ > keycloak-export.tgz";
+          echo "...";
+          keycloak/bin/standalone.sh
           -Dkeycloak.migration.action=export
           -Dkeycloak.migration.provider=dir
-          -Dkeycloak.migration.dir=/tmp
+          -Dkeycloak.migration.dir=$(pwd)/keycloak-export
+          --start-mode=suspend | tee export-start.log | grep -E "(export|services|WARN|ERROR)";
+          echo "WARNING Unexpected exit by keycloak";
+          tail -f /dev/null
       restartPolicy: Never
   backoffLimit: 2
