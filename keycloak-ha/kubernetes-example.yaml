@@ -141,6 +141,9 @@ spec:
         - /keycloak-ha-dev/entrypoint-instead-of-dockerfile.sh
         - /opt/jboss/docker-entrypoint.sh
         #args:
+        - -Dcom.sun.management.jmxremote.ssl=false
+        - -Dcom.sun.management.jmxremote.authenticate=false
+        - -Dcom.sun.management.jmxremote.port=5555
         - -b=0.0.0.0
         - -bmanagement=0.0.0.0
         - --server-config=standalone-ha.xml
@@ -171,6 +174,8 @@ spec:
           containerPort: 4712
         - name: txn-status-mgr
           containerPort: 4713
+        - name: jmx
+          containerPort: 5555
         readinessProbe:
           httpGet:
             path: /auth/
@@ -178,6 +183,17 @@ spec:
         volumeMounts:
         - name: keycloak-ha-dev
           mountPath: /keycloak-ha-dev
+      - name: metrics
+        image: solsson/kafka-prometheus-jmx-exporter@sha256:348b0f6510b08dff70ba468a16d25dc8def480fe79aca0e3c76f098d67b108a3
+        command:
+        - java
+        - -jar
+        - jmx_prometheus_httpserver.jar
+        - "5556"
+        - example_configs/httpserver_sample_config.yml
+        ports:
+        - name: slashmetrics
+          containerPort: 5556
       volumes:
       - name: keycloak-ha-dev
         configMap:
