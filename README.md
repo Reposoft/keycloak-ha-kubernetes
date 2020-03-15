@@ -1,3 +1,8 @@
+# DEPRECATED
+
+Keycloak's official images and docs have adopted the [DNS_PING](https://github.com/keycloak/keycloak-containers/blob/master/server/README.md#clustering) strategy för jgroups in Kubernetes
+that this repository [pioneered](https://github.com/keycloak/keycloak-containers/pull/100).
+
 # Keycloak Docker image
 
 This is a set of Docker images related to Keycloak. 
